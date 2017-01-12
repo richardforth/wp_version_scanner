@@ -4,6 +4,7 @@ use Getopt::Long qw(:config no_ignore_case bundling pass_through);
 use POSIX;
 use strict;
 use warnings;
+use File::Find;
 
 our $VERBOSE = "";
 our $NOCOLOR = 0;
@@ -36,7 +37,13 @@ our $ENDBOLD; # This is for the BBCODE [/b] tag
 our $UNDERLINE;
 our $ENDUNDERLINE; # This is for BBCODE [/u] tag
 
+our $STARTDIR;
 
+if ($ARGV[0]) {
+	$STARTDIR = $ARGV[0];
+} else { 
+	$STARTDIR = "/var/www";
+}
 
 GetOptions(
 	'help|h' => \$help,
@@ -46,7 +53,7 @@ GetOptions(
 	'verbose|v' => \$VERBOSE
 );
 
-if ( @ARGV > 0 ) {
+if ( @ARGV > 1 ) {
 	print "Invalid option: ";
 	foreach (@ARGV) {
 		print $_." ";
@@ -130,8 +137,10 @@ sub get_latest_wordpress_version {
 }
 
 sub systemcheck_wordpress_versions {
-        info_print("Searching for any wordpress installations, please wait...");
-        our $wordpress_version_files_rawlist = `find /var/www -type f -name "version.php"`;
+        info_print("Searching $STARTDIR for any wordpress installations, please wait...");
+	#our @wordpress_version_files_list;
+	#find(sub {push @wordpress_version_files_list, $File::Find::name  if -name eq "version.php"},  $dir);
+        our $wordpress_version_files_rawlist = `find $STARTDIR -type f -name "version.php"`;
         our @wordpress_version_files_list = split('\n', $wordpress_version_files_rawlist);
         our $wordpress_installations_count = @wordpress_version_files_list;
         if ($wordpress_installations_count eq 0) {
@@ -139,13 +148,11 @@ sub systemcheck_wordpress_versions {
         } else {
                 if (! $VERBOSE) {
                         info_print("Found $wordpress_installations_count 'potential' wordpress installations ${ENDC}(use ${CYAN}--verbose${ENDC} for details).");
-                        my $wp_latest = get_latest_wordpress_version();
-                        info_print("Latest wordpress version is: $wp_latest");
                 } else {
                         info_print("Found $wordpress_installations_count 'potential' wordpress installations:");
-                        my $wp_latest = get_latest_wordpress_version();
-                        info_print("Latest wordpress version is: $wp_latest");
                 }
+                my $wp_latest = get_latest_wordpress_version();
+                info_print("Latest wordpress version is: $wp_latest");
                 if ($VERBOSE) {
                         my $wp_latest = get_latest_wordpress_version();
                         foreach my $file (@wordpress_version_files_list) {
