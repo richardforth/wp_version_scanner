@@ -20,6 +20,7 @@ Done.
 # perl wpscan.pl --help
 Usage: wpscan.pl [space delimited list of directories] [OPTIONS]
 If no options are specified, the basic tests will be run.
+        -b, --bbcode            Print output in BBCODE style (useful for forums or ticketing systems that support bbcode)
         -h, --help              Print this help message
         -L, --light-term        Show colours for a light background terminal.
         -n, --nocolor           Use default terminal color, dont try to be all fancy!
