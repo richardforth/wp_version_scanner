@@ -14,12 +14,12 @@ my $help = "";
 
 sub usage {
 	our $usage_output = <<'END_USAGE';
-Usage: cb4.pl [OPTIONS]
+Usage: wpscan.pl [space delimited list of directories] [OPTIONS]
 If no options are specified, the basic tests will be run.
 	-h, --help		Print this help message
 	-L, --light-term	Show colours for a light background terminal.
 	-n, --nocolor		Use default terminal color, dont try to be all fancy! 
-	-v, --verbose		Use verbose output (this is very noisy, only useful for debugging)
+	-v, --verbose		Use verbose output (display list of wordpress versions found and where, and what version)
 
 END_USAGE
 	print $usage_output;
@@ -48,14 +48,19 @@ GetOptions(
 	'verbose|v' => \$VERBOSE
 );
 
+
+if ($help) {
+	usage();
+	exit;
+}
+
 if ( @ARGV > 0 ) {
-	if ( -d $ARGV[0]) {
-		$STARTDIR = $ARGV[0];
-		print $STARTDIR . "\n";
-	} else { 
-		print "Invalid option: ";
-		foreach (@ARGV) {
-			print $_." ";
+	foreach (@ARGV) {
+		if ( -d $_) {
+			$STARTDIR = $_;
+		} else { 
+			print "Doesnt appear to be a valid directory: ";
+			print $_."\n";
 		}
 	}
 } else {
@@ -137,14 +142,15 @@ sub get_latest_wordpress_version {
 }
 
 sub systemcheck_wordpress_versions {
-        info_print("Searching $STARTDIR for any wordpress installations, please wait...");
+	my ($STARDIR) = @_;
+        info_print("Searching ${BLUE}$STARTDIR${ENDC} for any wordpress installations, please wait...");
 	#our @wordpress_version_files_list;
 	#find(sub {push @wordpress_version_files_list, $File::Find::name  if -name eq "version.php"},  $dir);
         our $wordpress_version_files_rawlist = `find $STARTDIR -type f -name "version.php"`;
         our @wordpress_version_files_list = split('\n', $wordpress_version_files_rawlist);
         our $wordpress_installations_count = @wordpress_version_files_list;
         if ($wordpress_installations_count eq 0) {
-                info_print("Skipping wordpress tests due to no installations detected.")
+                info_print("No wordpress installations detected.")
         } else {
                 if (! $VERBOSE) {
                         info_print("Found $wordpress_installations_count 'potential' wordpress installations ${ENDC}(use ${CYAN}--verbose${ENDC} for details).");
@@ -172,4 +178,19 @@ sub systemcheck_wordpress_versions {
         }
 }
 
-systemcheck_wordpress_versions();
+if ( @ARGV > 0 ) {
+	foreach (@ARGV) {
+		if ( -d $_) {
+			$STARTDIR = $_;
+			systemcheck_wordpress_versions($STARTDIR);
+		} else { 
+			print "Doesnt appear to be a valid directory: ";
+			print $_."\n";
+		}
+	}
+} else {
+	$STARTDIR = "/var/www";	
+	print "Defaulting to " . $STARTDIR;
+	systemcheck_wordpress_versions($STARTDIR);
+}
+print "Done.\n\n";
