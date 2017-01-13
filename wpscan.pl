@@ -54,20 +54,6 @@ if ($help) {
 	exit;
 }
 
-if ( @ARGV > 0 ) {
-	foreach (@ARGV) {
-		if ( -d $_) {
-			$STARTDIR = $_;
-		} else { 
-			print "Doesnt appear to be a valid directory: ";
-			print $_."\n";
-		}
-	}
-} else {
-	$STARTDIR = "/var/www";	
-	print "Defaulting to " . $STARTDIR;
-}
-
 if ($NOCOLOR) {
 	$RED = ""; # SUPPRESS COLORS
 	$GREEN = ""; # SUPPRESS COLORS
@@ -126,6 +112,10 @@ sub good_print_item {
 	print "|${BOLD}${GREEN}OK${ENDC}${ENDBOLD}|${GREEN}     *  $_[0]${ENDC}\n";
 }
 
+sub bad_print {
+	print "[${BOLD}${RED}!!${ENDC}]${RED} $_[0]${ENDC}\n";
+}
+
 sub bad_print_item {
 	print "|${BOLD}${RED}!!${ENDC}${ENDBOLD}|${RED}     *  $_[0]${ENDC}\n";
 }
@@ -168,7 +158,7 @@ sub systemcheck_wordpress_versions {
                                         if ($version =~ /$wp_latest/) {
                                                 good_print_item("$file ($version) <-- UP TO DATE");
                                         } else {
-                                                bad_print_item("$file ($version) <-- PLEASE UPDATE URGENTLY");
+                                                bad_print_item("$file ($version) <-- PLEASE UPDATE");
                                         }
                                 } else {
                                         info_print_item("$file (not wordpress)");
@@ -184,13 +174,13 @@ if ( @ARGV > 0 ) {
 			$STARTDIR = $_;
 			systemcheck_wordpress_versions($STARTDIR);
 		} else { 
-			print "Doesnt appear to be a valid directory: ";
-			print $_."\n";
+			bad_print("Doesnt appear to be a valid directory: ");
+			bad_print_item($_);
 		}
 	}
 } else {
 	$STARTDIR = "/var/www";	
-	print "Defaulting to " . $STARTDIR;
+	info_print("Defaulting to " . $STARTDIR);
 	systemcheck_wordpress_versions($STARTDIR);
 }
 print "Done.\n\n";
