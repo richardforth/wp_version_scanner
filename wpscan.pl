@@ -39,11 +39,6 @@ our $ENDUNDERLINE; # This is for BBCODE [/u] tag
 
 our $STARTDIR;
 
-if ($ARGV[0]) {
-	$STARTDIR = $ARGV[0];
-} else { 
-	$STARTDIR = "/var/www";
-}
 
 GetOptions(
 	'help|h' => \$help,
@@ -53,14 +48,19 @@ GetOptions(
 	'verbose|v' => \$VERBOSE
 );
 
-if ( @ARGV > 1 ) {
-	print "Invalid option: ";
-	foreach (@ARGV) {
-		print $_." ";
+if ( @ARGV > 0 ) {
+	if ( -d $ARGV[0]) {
+		$STARTDIR = $ARGV[0];
+		print $STARTDIR . "\n";
+	} else { 
+		print "Invalid option: ";
+		foreach (@ARGV) {
+			print $_." ";
+		}
 	}
-	print "\n";
-	usage;
-	exit;
+} else {
+	$STARTDIR = "/var/www";	
+	print "Defaulting to " . $STARTDIR;
 }
 
 if ($NOCOLOR) {
