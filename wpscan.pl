@@ -134,10 +134,8 @@ sub get_latest_wordpress_version {
 sub systemcheck_wordpress_versions {
 	my ($STARDIR) = @_;
         info_print("Searching ${BLUE}$STARTDIR${ENDC} for any wordpress installations, please wait...");
-	#our @wordpress_version_files_list;
-	#find(sub {push @wordpress_version_files_list, $File::Find::name  if -name eq "version.php"},  $dir);
-        our $wordpress_version_files_rawlist = `find $STARTDIR -type f -name "version.php"`;
-        our @wordpress_version_files_list = split('\n', $wordpress_version_files_rawlist);
+	our @wordpress_version_files_list;
+	find(sub {push @wordpress_version_files_list, $File::Find::name  if $_ eq "version.php"},  $STARTDIR);
         our $wordpress_installations_count = @wordpress_version_files_list;
         if ($wordpress_installations_count eq 0) {
                 info_print("No wordpress installations detected.")
