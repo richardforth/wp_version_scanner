@@ -113,7 +113,7 @@ sub good_print_item {
 }
 
 sub bad_print {
-	print "[${BOLD}${RED}!!${ENDC}]${RED} $_[0]${ENDC}\n";
+	print "|${BOLD}${RED}!!${ENDC}${ENDBOLD}|${RED} $_[0]${ENDC}\n";
 }
 
 sub bad_print_item {
