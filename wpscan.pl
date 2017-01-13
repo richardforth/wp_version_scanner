@@ -80,7 +80,7 @@ if ($NOCOLOR) {
 	$ENDC = "\033[0m"; # Default to ANSI codes
 } elsif ($BBCODE) {
 	$RED = "[color=#FF0000]"; # 
-	$GREEN = "[color=#00FF00]"; # 
+	$GREEN = "[color=#0000FF]"; # Make GREEN appear as BLUE, as green looks horrid on forums, hard to read. 
 	$YELLOW = ""; # 
 	$BLUE = "[color=#0000FF]"; # 
 	$PURPLE = ""; # 
