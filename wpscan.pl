@@ -5,6 +5,7 @@ use POSIX;
 use strict;
 use warnings;
 use File::Find;
+use HTTP::Tiny;
 
 our $VERBOSE = "";
 our $NOCOLOR = 0;
@@ -126,6 +127,11 @@ sub info_print_item {
 
 
 sub get_latest_wordpress_version {
+	#our $url = "wordpress.org/latest";
+	#our $http = HTTP::Tiny->new;
+	#our $method = "HEAD";
+        #our $response = $http->request($method, $url);
+	#print $response . "\n";
         our $response = `curl -sILk wordpress.org/latest | grep Content-Disposition`;
         our ($wp_latest_version) = $response =~ /(\d+.\d+(.\d+)?)/;
         return $wp_latest_version;
