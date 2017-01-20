@@ -138,7 +138,6 @@ sub systemcheck_wordpress_versions {
 	my ($STARDIR) = @_;
 	our @wordpress_version_files_list = ''; # reset the counter = see issue #18
         info_print("Searching ${BLUE}$STARTDIR${ENDC} for any wordpress installations, please wait...");
-	our @wordpress_version_files_list;
 	find(sub {push @wordpress_version_files_list, $File::Find::name  if $_ eq "version.php"},  $STARTDIR);
         our $wordpress_installations_count = @wordpress_version_files_list;
         if ($wordpress_installations_count eq 0) {
