@@ -5,7 +5,7 @@ use POSIX;
 use strict;
 use warnings;
 use File::Find;
-use HTTP::Tiny;
+#use HTTP::Tiny; #doesnt work on CentOS6.x or below.
 
 our $VERBOSE = "";
 our $NOCOLOR = 0;
