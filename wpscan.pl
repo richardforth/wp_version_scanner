@@ -136,7 +136,7 @@ sub get_latest_wordpress_version {
 
 sub systemcheck_wordpress_versions {
 	my ($STARTDIR) = @_;
-	our @wordpress_version_files_list = ''; # reset the counter = see issue #18
+	our @wordpress_version_files_list = (); # reset the counter = see issue #18
         info_print("Searching ${BLUE}$STARTDIR${ENDC} for any wordpress installations, please wait...");
 	find(sub {push @wordpress_version_files_list, $File::Find::name  if $_ eq "version.php"},  $STARTDIR);
         our $wordpress_installations_count = @wordpress_version_files_list;
@@ -153,17 +153,21 @@ sub systemcheck_wordpress_versions {
                 if ($VERBOSE) {
                         my $wp_latest = get_latest_wordpress_version();
                         foreach my $file (@wordpress_version_files_list) {
-                                my $version = `grep "^\\\$wp_version" $file`;
-                                chomp($version);
-                                if ($version) {
-                                        if ($version =~ /$wp_latest/) {
-                                                good_print_item("$file ($version) <-- UP TO DATE");
-                                        } else {
-                                                bad_print_item("$file ($version) <-- PLEASE UPDATE");
-                                        }
-                                } else {
-                                        info_print_item("$file (not wordpress)");
-                                }
+				if ( -f $file) {
+                                	my $version = `grep "^\\\$wp_version" $file`;
+                                	chomp($version);
+                                	if ($version) {
+                                	        if ($version =~ /$wp_latest/) {
+                               			        good_print_item("$file ($version) <-- UP TO DATE");
+                               	 	        } else {
+                                        	        bad_print_item("$file ($version) <-- PLEASE UPDATE");
+                                     		}
+                                	} else {
+                                     		info_print_item("$file (not wordpress)");
+                                	}
+				} else {
+					info_print_item("$file (not a valid file)")
+				}
                         }
                 }
         }
