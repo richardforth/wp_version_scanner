@@ -1,11 +1,10 @@
 #!/usr/bin/perl
-eval "use diagnostics; 1"  or die("\n[ FATAL ] Could not load the Diagnostics module.\n\nTry:\n\n      sudo apt-get install perl-modules\n\nThen try running this script again.\n\n");
+use diagnostics;
 use Getopt::Long qw(:config no_ignore_case bundling pass_through);
 use POSIX;
 use strict;
 use warnings;
 use File::Find;
-#use HTTP::Tiny; #doesnt work on CentOS6.x or below.
 
 our $VERBOSE = "";
 our $NOCOLOR = 0;
@@ -76,9 +75,9 @@ if ($NOCOLOR) {
 	$PURPLE = "\033[1m"; # bold all the things!
 	$CYAN = "\033[1m";  # bold all the things!
 	$BOLD = "\033[1m"; # Default to ANSI codes.     
-	$ENDBOLD = ""; # Default to ANSI codes.     
+	$ENDBOLD = "\033[0m"; # Default to ANSI codes.     
 	$UNDERLINE = "\033[4m"; # Default to ANSI codes.     
-	$ENDUNDERLINE = ""; # Default to ANSI codes.     
+	$ENDUNDERLINE = "\033[0m"; # Default to ANSI codes.     
 	$ENDC = "\033[0m"; # Default to ANSI codes
 } elsif ($BBCODE) {
 	$RED = "[color=#FF0000]"; # 
@@ -91,7 +90,7 @@ if ($NOCOLOR) {
 	$ENDBOLD = "[/b]"; # 
 	$UNDERLINE = "[u]"; # 
 	$ENDUNDERLINE = "[/u]"; # 
-	$ENDC = "[/color]"; # SUPPRESS COLORS
+	$ENDC = "[/color]"; # 
 } else {
 	$RED = "\033[91m"; # Default to ANSI codes.
 	$GREEN = "\033[92m"; # Default to ANSI codes. 
@@ -100,9 +99,9 @@ if ($NOCOLOR) {
 	$PURPLE = "\033[95m"; # Default to ANSI codes.     
 	$CYAN = "\033[96m"; # Default to ANSI codes.     
 	$BOLD = "\033[1m"; # Default to ANSI codes.     
-	$ENDBOLD = ""; # Default to ANSI codes.     
+	$ENDBOLD = "\033[0m"; # Default to ANSI codes.     
 	$UNDERLINE = "\033[4m"; # Default to ANSI codes.     
-	$ENDUNDERLINE = ""; # Default to ANSI codes.     
+	$ENDUNDERLINE = "\033[0m"; # Default to ANSI codes.     
 	$ENDC = "\033[0m"; # Default to ANSI codes
 }
 
@@ -147,9 +146,9 @@ sub systemcheck_wordpress_versions {
                 good_print("No wordpress installations detected.")
         } else {
                 if (! $VERBOSE) {
-                        info_print("Found $wordpress_installations_count 'potential' wordpress installations ${ENDC}(use ${CYAN}--verbose${ENDC} for details).");
+                        info_print("Found ${BOLD}$wordpress_installations_count${ENDBOLD} '${UNDERLINE}potential${ENDUNDERLINE}' wordpress installations ${ENDC}(use ${CYAN}--verbose${ENDC} for details).");
                 } else {
-                        info_print("Found $wordpress_installations_count 'potential' wordpress installations:");
+                        info_print("Found ${BOLD}$wordpress_installations_count${ENDBOLD} '${UNDERLINE}potential${ENDUNDERLINE}' wordpress installations:");
                 }
                 if ($VERBOSE) {
                         my $wp_latest = get_latest_wordpress_version();
