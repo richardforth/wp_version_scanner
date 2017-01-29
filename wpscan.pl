@@ -110,22 +110,25 @@ sub info_print {
 	print "|${BOLD}${BLUE}--${ENDC}${ENDBOLD}| $_[0]\n";
 }
 
-sub good_print_item {
-	print "|${BOLD}${GREEN}OK${ENDC}${ENDBOLD}|${GREEN}     *  $_[0]${ENDC}\n";
+sub good_print {
+	print "|${BOLD}${GREEN}OK${ENDC}${ENDBOLD}|${GREEN} $_[0]${ENDC}\n";
 }
 
 sub bad_print {
 	print "|${BOLD}${RED}!!${ENDC}${ENDBOLD}|${RED} $_[0]${ENDC}\n";
 }
 
-sub bad_print_item {
-	print "|${BOLD}${RED}!!${ENDC}${ENDBOLD}|${RED}     *  $_[0]${ENDC}\n";
-}
-
 sub info_print_item {
 	print "|${BOLD}${BLUE}--${ENDC}${ENDBOLD}|     *  $_[0]\n";
 }
 
+sub good_print_item {
+	print "|${BOLD}${GREEN}OK${ENDC}${ENDBOLD}|${GREEN}     *  $_[0]${ENDC}\n";
+}
+
+sub bad_print_item {
+	print "|${BOLD}${RED}!!${ENDC}${ENDBOLD}|${RED}     *  $_[0]${ENDC}\n";
+}
 
 sub get_latest_wordpress_version {
 	our $url = "https://wordpress.org/latest";
@@ -141,23 +144,30 @@ sub systemcheck_wordpress_versions {
 	find(sub {push @wordpress_version_files_list, $File::Find::name  if $_ eq "version.php"},  $STARTDIR);
         our $wordpress_installations_count = @wordpress_version_files_list;
         if ($wordpress_installations_count eq 0) {
-                info_print("No wordpress installations detected.")
+                good_print("No wordpress installations detected.")
         } else {
                 if (! $VERBOSE) {
                         info_print("Found $wordpress_installations_count 'potential' wordpress installations ${ENDC}(use ${CYAN}--verbose${ENDC} for details).");
                 } else {
                         info_print("Found $wordpress_installations_count 'potential' wordpress installations:");
                 }
-                my $wp_latest = get_latest_wordpress_version();
-                info_print("Latest wordpress version is: $wp_latest");
                 if ($VERBOSE) {
                         my $wp_latest = get_latest_wordpress_version();
                         foreach my $file (@wordpress_version_files_list) {
 				if ( -f $file) {
-                                	my $version = `grep "^\\\$wp_version" $file`;
-                                	chomp($version);
-                                	if ($version) {
-                                	        if ($version =~ /$wp_latest/) {
+					open my $fh, '<', $file or die $!;
+					my @lines = <$fh>;
+					foreach my $line (@lines) {
+						if ($line =~ m/^\$wp_version/) {
+							our $raw_version = $line;
+							last; # no point processing any more lines
+						} 
+					} 
+                                	our $raw_version;
+                                	chomp($raw_version);
+                                	if ($raw_version) {
+                                	        my ($version) = $raw_version =~ /(\d+.\d+(.\d+)?)/; 
+						if ($version =~ /$wp_latest/) {
                                			        good_print_item("$file ($version) <-- UP TO DATE");
                                	 	        } else {
                                         	        bad_print_item("$file ($version) <-- PLEASE UPDATE");
@@ -176,6 +186,8 @@ sub systemcheck_wordpress_versions {
 #########################################
 ## MAIN SCRIPT EXECUTION STARTS HERE
 #########################################
+my $wp_latest = get_latest_wordpress_version();
+info_print("Latest wordpress version is: ${BOLD}$wp_latest${ENDBOLD}");
 if ( @ARGV > 0 ) {
 	foreach (@ARGV) {
 		if ( -d $_) {
