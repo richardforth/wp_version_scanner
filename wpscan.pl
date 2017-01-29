@@ -135,7 +135,7 @@ sub get_latest_wordpress_version {
 }
 
 sub systemcheck_wordpress_versions {
-	my ($STARDIR) = @_;
+	my ($STARTDIR) = @_;
 	our @wordpress_version_files_list = ''; # reset the counter = see issue #18
         info_print("Searching ${BLUE}$STARTDIR${ENDC} for any wordpress installations, please wait...");
 	find(sub {push @wordpress_version_files_list, $File::Find::name  if $_ eq "version.php"},  $STARTDIR);
@@ -169,10 +169,13 @@ sub systemcheck_wordpress_versions {
         }
 }
 
+#########################################
+## MAIN SCRIPT EXECUTION STARTS HERE
+#########################################
 if ( @ARGV > 0 ) {
 	foreach (@ARGV) {
 		if ( -d $_) {
-			$STARTDIR = $_;
+			my $STARTDIR = $_;
 			systemcheck_wordpress_versions($STARTDIR);
 		} else { 
 			bad_print("Doesnt appear to be a valid directory: ");
@@ -180,8 +183,13 @@ if ( @ARGV > 0 ) {
 		}
 	}
 } else {
-	$STARTDIR = "/var/www";	
+	my $STARTDIR = "/var/www";	
 	info_print("Defaulting to " . $STARTDIR);
-	systemcheck_wordpress_versions($STARTDIR);
+	if ( -d $STARTDIR) {
+		systemcheck_wordpress_versions($STARTDIR);
+	} else { 
+		bad_print("Doesnt appear to be a valid directory: ");
+		bad_print_item($STARTDIR);
+	}
 }
 print "Done.\n\n";
