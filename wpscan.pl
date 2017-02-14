@@ -163,8 +163,8 @@ sub systemcheck_wordpress_versions {
 						} 
 					} 
                                 	our $raw_version;
-                                	chomp($raw_version);
                                 	if ($raw_version) {
+						chomp($raw_version);
                                 	        my ($version) = $raw_version =~ /(\d+.\d+(.\d+)?)/; 
 						if ($version =~ /$wp_latest/) {
                                			        good_print_item("$file ($version) <-- UP TO DATE");
