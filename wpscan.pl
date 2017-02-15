@@ -5,6 +5,7 @@ use POSIX;
 use strict;
 use warnings;
 use File::Find;
+use LWP::UserAgent;
 
 our $VERBOSE = "";
 our $NOCOLOR = 0;
@@ -130,10 +131,15 @@ sub bad_print_item {
 }
 
 sub get_latest_wordpress_version {
-	our $url = "https://wordpress.org/latest";
-        our $response = `curl -sILk wordpress.org/latest | grep Content-Disposition`;
-        our ($wp_latest_version) = $response =~ /(\d+.\d+(.\d+)?)/;
-        return $wp_latest_version;
+        my $url = 'http://wordpress.org/latest';
+	my $ua = 'LWP::UserAgent'->new;
+
+	if (my $header = $ua->head($url)) {
+    		my ($wp_latest_version) = $header->header('Content-Disposition') =~ /(\d+\.\d+(?:\.\d+)?)/;
+    		return $wp_latest_version;
+	} else {
+    		die "Can't retrieve the header from '$url'.\n";
+	}
 }
 
 sub systemcheck_wordpress_versions {
