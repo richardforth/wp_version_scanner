@@ -131,22 +131,30 @@ sub bad_print_item {
 }
 
 sub get_latest_wordpress_version {
-        my $url = 'http://wordpress.org/latest';
-	my $ua = 'LWP::UserAgent'->new;
-
-	if (my $header = $ua->head($url)) {
-    		my ($wp_latest_version) = $header->header('Content-Disposition') =~ /(\d+\.\d+(?:\.\d+)?)/;
-    		return $wp_latest_version;
-	} else {
-    		die "Can't retrieve the header from '$url'.\n";
-	}
+        #my $url = 'http://wordpress.org/latest';
+	#my $ua = 'LWP::UserAgent'->new;
+	
+	#if (my $header = $ua->head($url)) {
+    	#	my ($wp_latest_version) = $header->header('Content-Disposition') =~ /(\d+\.\d+(?:\.\d+)?)/;
+    	our $url = "https://wordpress.org/latest";
+	our $response = `curl -sILk wordpress.org/latest | grep Content-Disposition`;
+	our ($wp_latest_version) = $response =~ /(\d+.\d+(.\d+)?)/;
+    	return $wp_latest_version;
+    	#	return $wp_latest_version;
+	#} else {
+    	#	die "Can't retrieve the header from '$url'.\n";
+	#}
 }
 
 sub systemcheck_wordpress_versions {
 	my ($STARTDIR) = @_;
 	our @wordpress_version_files_list = (); # reset the counter = see issue #18
+	our $uptodate_counter = 0;
+	our $requiresupdate_counter = 0;
+	our $notwordpress_counter = 0;
         info_print("Searching ${BLUE}$STARTDIR${ENDC} for any wordpress installations, please wait...");
 	find(sub {push @wordpress_version_files_list, $File::Find::name  if $_ eq "version.php"},  $STARTDIR);
+	info_print("${BOLD}${UNDERLINE}Summary Report for $STARTDIR:${ENDUNDERLINE}${ENDBOLD}");
         our $wordpress_installations_count = @wordpress_version_files_list;
         if ($wordpress_installations_count eq 0) {
                 good_print("No wordpress installations detected.")
@@ -156,37 +164,53 @@ sub systemcheck_wordpress_versions {
                 } else {
                         info_print("Found ${BOLD}$wordpress_installations_count${ENDBOLD} '${UNDERLINE}potential${ENDUNDERLINE}' wordpress installations:");
                 }
-                if ($VERBOSE) {
-                        my $wp_latest = get_latest_wordpress_version();
-                        foreach my $file (@wordpress_version_files_list) {
-				if ( -f $file) {
-					open my $fh, '<', $file or die $!;
-					my @lines = <$fh>;
-					foreach my $line (@lines) {
-						if ($line =~ m/^\$wp_version/) {
-							our $raw_version = $line;
-							last; # no point processing any more lines
-						} 
-					} 
-                                	our $raw_version;
-                                	if ($raw_version) {
-						chomp($raw_version);
-                                	        my ($version) = $raw_version =~ /(\d+.\d+(.\d+)?)/; 
-						if ($version =~ /$wp_latest/) {
-                               			        good_print_item("$file ($version) <-- UP TO DATE");
-                               	 	        } else {
-                                        	        bad_print_item("$file ($version) <-- PLEASE UPDATE");
-                                     		}
-                                	} else {
-                                     		info_print_item("$file (not wordpress)");
-                                	}
-				} else {
-					info_print_item("$file (not a valid file)")
-				}
-                        }
-                }
-        }
-}
+                my $wp_latest = get_latest_wordpress_version();
+                foreach my $file (@wordpress_version_files_list) {
+			our $raw_version;
+			if ($raw_version) {
+				undef $raw_version;
+			}
+			if ( -f $file) {
+				open my $fh, '<', $file or die $!;
+				my @lines = <$fh>;
+				foreach my $line (@lines) {
+					if ($line =~ m/^\$wp_version/) {
+						$raw_version = $line;
+						last; # no point processing any more lines
+					}
+				} 
+                               	if ($raw_version) {
+					chomp($raw_version);
+                               	        my ($version) = $raw_version =~ /(\d+.\d+(.\d+)?)/; 
+					if ($version =~ /$wp_latest/) {
+						$uptodate_counter++;
+                              		        if ($VERBOSE) { good_print_item("$file ($version) <-- UP TO DATE") }
+                        	        } else {
+						$requiresupdate_counter++;
+                                       	        if ($VERBOSE) { bad_print_item("$file ($version) <-- PLEASE UPDATE") }
+                                 	}
+                                } else {
+					$notwordpress_counter++;
+                                	if ($VERBOSE) { info_print_item("$file (not wordpress)") }
+                                }
+			} 
+		}
+		if ($uptodate_counter eq 0) {
+			bad_print(" -> None up to date.")
+		} else {
+			good_print(" -> ${BOLD}$uptodate_counter${ENDBOLD} up to date.")
+		}
+		if ($requiresupdate_counter eq 0) {
+			good_print(" -> ${BOLD}None${ENDBOLD} require updating.")
+		} else {
+			bad_print(" -> ${BOLD}$requiresupdate_counter${ENDBOLD} require updating.")
+		}
+		if ($notwordpress_counter gt 0) {
+			info_print(" -> ${BOLD}$notwordpress_counter${ENDBOLD} found not to be wordpress installations after closer inspection.")
+		}
+	}
+}	
+
 
 #########################################
 ## MAIN SCRIPT EXECUTION STARTS HERE
