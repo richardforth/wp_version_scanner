@@ -4,18 +4,24 @@ Wordpress Version Scanner
 ```
 usage example:
 
-# perl wpscan.pl /home /var/www /mnt/san --verbose
-|--| Searching /home for any wordpress installations, please wait...
-|--| No wordpress installations detected.
+# perl wpscan.pl /var/www /mnt /home --verbose
+|--| Latest wordpress version is: 4.7.3
 |--| Searching /var/www for any wordpress installations, please wait...
-|--| Found 2 'potential' wordpress installations:
-|--| Latest wordpress version is: 4.7.1
-|OK|     *  /var/www/html/wordpress1/wp-includes/version.php ($wp_version = '4.7.1';) <-- UP TO DATE
-|!!|     *  /var/www/html/wordpress/wp-includes/version.php ($wp_version = '4.7';) <-- PLEASE UPDATE
-[!!] Doesnt appear to be a valid directory:
-|!!|     *  /mnt/san
+|--| Summary Report for /var/www:
+|--| Found 3 'potential' wordpress installations:
+|OK|     *  /var/www/website1/wp-includes/version.php (4.7.3) <-- UP TO DATE
+|--|     *  /var/www/website2/version.php (not wordpress)
+|!!|     *  /var/www/website3/version.php (4.7.1) <-- PLEASE UPDATE
+|OK|  -> 1 up to date.
+|!!|  -> 1 require updating.
+|--|  -> 1 found not to be wordpress installations after closer inspection.
+|--| Searching /mnt for any wordpress installations, please wait...
+|--| Summary Report for /mnt:
+|OK| No wordpress installations detected.
+|--| Searching /home for any wordpress installations, please wait...
+|--| Summary Report for /home:
+|OK| No wordpress installations detected.
 Done.
-
 
 # perl wpscan.pl --help
 Usage: wpscan.pl [space delimited list of directories] [OPTIONS]
