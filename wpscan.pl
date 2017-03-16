@@ -5,7 +5,7 @@ use POSIX;
 use strict;
 use warnings;
 use File::Find;
-use LWP::UserAgent;
+# use LWP::UserAgent;
 
 our $VERBOSE = "";
 our $NOCOLOR = 0;
