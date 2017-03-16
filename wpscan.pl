@@ -206,7 +206,7 @@ sub systemcheck_wordpress_versions {
 			bad_print(" -> ${BOLD}$requiresupdate_counter${ENDBOLD} require updating.")
 		}
 		if ($notwordpress_counter gt 0) {
-			info_print(" -> ${BOLD}$notwordpress_counter${ENDBOLD} found not to be wordpress installations after closer inspection.")
+			info_print(" -> ${BOLD}$notwordpress_counter${ENDBOLD} found not to be wordpress after closer inspection.")
 		}
 	}
 }	
