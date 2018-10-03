@@ -33,6 +33,7 @@ our $YELLOW;
 our $BLUE;
 our $PURPLE;
 our $CYAN;
+our $WHITE;
 our $ENDC = "\033[0m"; # reset the terminal color
 our $BOLD;
 our $ENDBOLD; # This is for the BBCODE [/b] tag
@@ -63,6 +64,7 @@ if ($NOCOLOR) {
 	$BLUE = ""; # SUPPRESS COLORS
 	$PURPLE = ""; # SUPPRESS COLORS
 	$CYAN = ""; # SUPPRESS COLORS
+	$WHITE = ""; # SUPPRESS COLORS
 	$ENDC = ""; # SUPPRESS COLORS
 	$BOLD = ""; # SUPPRESS COLORS
 	$ENDBOLD = ""; # SUPPRESS COLORS
@@ -75,6 +77,7 @@ if ($NOCOLOR) {
 	$BLUE = "\033[1m"; # bold all the things!
 	$PURPLE = "\033[1m"; # bold all the things!
 	$CYAN = "\033[1m";  # bold all the things!
+	$WHITE = "\033[1m";  # bold all the things!
 	$BOLD = "\033[1m"; # Default to ANSI codes.     
 	$ENDBOLD = "\033[0m"; # Default to ANSI codes.     
 	$UNDERLINE = "\033[4m"; # Default to ANSI codes.     
@@ -87,6 +90,7 @@ if ($NOCOLOR) {
 	$BLUE = "[color=#0000FF]"; # 
 	$PURPLE = ""; # 
 	$CYAN = ""; # 
+	$WHITE = ""; # 
 	$BOLD = "[b]"; # 
 	$ENDBOLD = "[/b]"; # 
 	$UNDERLINE = "[u]"; # 
@@ -99,6 +103,7 @@ if ($NOCOLOR) {
 	$BLUE = "\033[94m"; # Default to ANSI codes.  
 	$PURPLE = "\033[95m"; # Default to ANSI codes.     
 	$CYAN = "\033[96m"; # Default to ANSI codes.     
+	$WHITE = "\033[97m"; # Default to ANSI codes.     
 	$BOLD = "\033[1m"; # Default to ANSI codes.     
 	$ENDBOLD = "\033[0m"; # Default to ANSI codes.     
 	$UNDERLINE = "\033[4m"; # Default to ANSI codes.     
@@ -184,14 +189,14 @@ sub systemcheck_wordpress_versions {
                                	        my ($version) = $raw_version =~ /(\d+.\d+(.\d+)?)/; 
 					if ($version =~ /$wp_latest/) {
 						$uptodate_counter++;
-                              		        if ($VERBOSE) { good_print_item("$file ($version) <-- UP TO DATE") }
+                              		        if ($VERBOSE) { good_print_item("(${WHITE}$version${ENDC}) [ ${GREEN}UP TO DATE${ENDC} ] $file") }
                         	        } else {
 						$requiresupdate_counter++;
-                                       	        if ($VERBOSE) { bad_print_item("$file ($version) <-- PLEASE UPDATE") }
+                                       	        if ($VERBOSE) { bad_print_item("(${WHITE}$version${ENDC}) [ ${RED}PLEASE UPDATE${ENDC} ] $file") }
                                  	}
                                 } else {
 					$notwordpress_counter++;
-                                	if ($VERBOSE) { info_print_item("$file (not wordpress)") }
+                                	if ($VERBOSE) { info_print_item("[ ${WHITE}NOT WORDPRESS${ENDC} ] $file") }
                                 }
 			} 
 		}
