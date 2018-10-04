@@ -146,9 +146,19 @@ sub bad_print_item {
 
 sub get_version_date {
 	my ($version) = @_;
-	our $response = `curl -sL https://codex.wordpress.org/WordPress_Versions | grep -A2 "$version" | egrep "[0-9]{4}" | head -1 | sed -e 's/<td> //'`;
-	chomp($response);
-	return $response;
+	our %date_of;
+	if ( ! $date_of{$version} ) {
+		our $response = `curl -sL https://codex.wordpress.org/WordPress_Versions | grep -A2 "Version $version" | egrep "[0-9]{4}" | head -1 | sed -e 's/<td> //'`;
+		chomp($response);
+		if ($response =~ /January|February|March|April|May|June|July|August|September|October|November|December/) {
+			$date_of{$version} = $response;
+		} else {
+			$date_of{$version} = "DATE NOT FOUND";
+		}
+		return $date_of{$version};
+	} else {
+		return $date_of{$version};
+	}
 }
 
 sub get_latest_wordpress_version {
@@ -160,6 +170,8 @@ sub get_latest_wordpress_version {
     	#our $url = "https://wordpress.org/latest";
 	our $response = `curl -sILk wordpress.org/latest | grep Content-Disposition`;
 	our ($wp_latest_version) = $response =~ /(\d+.\d+(.\d+)?)/;
+	# now warm up the cache with this version to save future lookups with curl
+	get_version_date($wp_latest_version);	
     	return $wp_latest_version;
     	#	return $wp_latest_version;
 	#} else {
@@ -176,8 +188,7 @@ sub systemcheck_wordpress_versions {
         info_print("Searching ${BLUE}$STARTDIR${ENDC} for any wordpress installations, please wait...");
 	find(sub {
 		my $file = $File::Find::name;
-		#printf("\r_Scanning: $file\r");
-		#printf ("\r" . (" " x (length($file) + 11)) . "\r");
+		printf("\r_Scanning: $file\r");
 		if ($_ eq "version.php") {
 			push @wordpress_version_files_list, $File::Find::name;
 			our $raw_version;
@@ -211,6 +222,7 @@ sub systemcheck_wordpress_versions {
                                	}
 			}
 		}
+		printf ("\r" . (" " x (length($file) + 11)) . "\r");
 	},  $STARTDIR);
 	info_print("${BOLD}${UNDERLINE}Summary Report for $STARTDIR:${ENDUNDERLINE}${ENDBOLD}");
         our $wordpress_installations_count = @wordpress_version_files_list;
@@ -243,7 +255,8 @@ sub systemcheck_wordpress_versions {
 ## MAIN SCRIPT EXECUTION STARTS HERE
 #########################################
 our $wp_latest = get_latest_wordpress_version();
-info_print("Latest wordpress version is: ${BOLD}$wp_latest${ENDBOLD}");
+my $date = get_version_date($wp_latest);
+info_print("Latest wordpress version is: ${BOLD}$wp_latest ($date)${ENDBOLD}");
 if ( @ARGV > 0 ) {
 	foreach (@ARGV) {
 		if ( -d $_) {
@@ -264,4 +277,16 @@ if ( @ARGV > 0 ) {
 		bad_print_item($STARTDIR);
 	}
 }
+
+# checking the hash is buiding correctly
+info_print("${BOLD}${UNDERLINE}List of wordpress versions I looked up, by release date: ${ENDUNDERLINE}${ENDBOLD}");
+our %date_of;
+for my $k (sort keys %date_of) {
+	if ($k eq $wp_latest) {
+		print "$k => $date_of{$k} ${GREEN}(Latest)${ENDC}\n";
+	} else {
+		print "$k => $date_of{$k}\n";
+	}
+}
+
 print "Done.\n\n";
