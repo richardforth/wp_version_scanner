@@ -6,17 +6,17 @@ Now with 9000% more status so you know whats going on!
 ```
 usage example:
 
-# perl wpscan.pl --verbose
-|--| Latest wordpress version is: 4.9.8
+$ perl wpscan.pl /var/www --verbose
+|--| Latest wordpress version is: 4.9.8 (August 2, 2018)
 |--| Searching /var/www for any wordpress installations, please wait...
-|!!|     *  (4.9.7) [ PLEASE UPDATE ] /var/www/wptesting/wp2/version.php
-|--|     *  [ NOT WORDPRESS ] /var/www/somesite/someshoppingcart/version.php
-|OK|     *  (4.9.8) [ UP TO DATE    ] /var/www//wptesting/wp306/version.php
+|!!|     *  (2.0.4) [ PLEASE UPDATE (July 29, 2006) ] /var/www/wordpresstest/version.php
 |--| Summary Report for /var/www:
-|--| Found 3 'potential' wordpress installations:
-|OK|  -> 1 up to date.
+|--| Found 1 'potential' wordpress installations:
+|!!|  -> None up to date.
 |!!|  -> 1 require updating.
-|--|  -> 1 found not to be wordpress after closer inspection.
+|--| List of wordpress versions I looked up, by release date:
+2.0.4 => July 29, 2006
+4.9.8 => August 2, 2018 (Latest)
 Done.
 
 # perl wpscan.pl --help
