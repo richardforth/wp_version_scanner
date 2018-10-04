@@ -247,6 +247,17 @@ sub systemcheck_wordpress_versions {
 		if ($notwordpress_counter gt 0) {
 			info_print(" -> ${BOLD}$notwordpress_counter${ENDBOLD} found not to be wordpress after closer inspection.")
 		}
+		info_print("${BOLD}${UNDERLINE}List of wordpress versions I looked up, by release date: ${ENDUNDERLINE}${ENDBOLD}");
+		our %date_of;
+		our $wp_latest;
+		for my $k (sort keys %date_of) {
+			if ($k eq $wp_latest) {
+				print "$k => $date_of{$k} ${GREEN}(Latest)${ENDC}\n";
+			} else {
+				print "$k => $date_of{$k}\n";
+			}
+		}
+
 	}
 }	
 
@@ -275,17 +286,6 @@ if ( @ARGV > 0 ) {
 	} else { 
 		bad_print("Doesnt appear to be a valid directory: ");
 		bad_print_item($STARTDIR);
-	}
-}
-
-# checking the hash is buiding correctly
-info_print("${BOLD}${UNDERLINE}List of wordpress versions I looked up, by release date: ${ENDUNDERLINE}${ENDBOLD}");
-our %date_of;
-for my $k (sort keys %date_of) {
-	if ($k eq $wp_latest) {
-		print "$k => $date_of{$k} ${GREEN}(Latest)${ENDC}\n";
-	} else {
-		print "$k => $date_of{$k}\n";
 	}
 }
 
