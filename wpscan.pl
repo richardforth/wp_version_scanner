@@ -7,6 +7,9 @@ use warnings;
 use File::Find;
 # use LWP::UserAgent;
 
+# flush buffers
+$| = 1;
+
 our $VERBOSE = "";
 our $NOCOLOR = 0;
 our $LIGHTBG = 0;
@@ -112,27 +115,33 @@ if ($NOCOLOR) {
 }
 
 sub info_print {
-	print "|${BOLD}${BLUE}--${ENDC}${ENDBOLD}| $_[0]\n";
+	print "\r                                                                                                                                                             ";
+	print "\r|${BOLD}${BLUE}--${ENDC}${ENDBOLD}| $_[0]\n";
 }
 
 sub good_print {
-	print "|${BOLD}${GREEN}OK${ENDC}${ENDBOLD}|${GREEN} $_[0]${ENDC}\n";
+	print "\r                                                                                                                                                             ";
+	print "\r|${BOLD}${GREEN}OK${ENDC}${ENDBOLD}|${GREEN} $_[0]${ENDC}\n";
 }
 
 sub bad_print {
-	print "|${BOLD}${RED}!!${ENDC}${ENDBOLD}|${RED} $_[0]${ENDC}\n";
+	print "\r                                                                                                                                                             ";
+	print "\r|${BOLD}${RED}!!${ENDC}${ENDBOLD}|${RED} $_[0]${ENDC}\n";
 }
 
 sub info_print_item {
-	print "|${BOLD}${BLUE}--${ENDC}${ENDBOLD}|     *  $_[0]\n";
+	print "\r                                                                                                                                                             ";
+	print "\r|${BOLD}${BLUE}--${ENDC}${ENDBOLD}|     *  $_[0]\n";
 }
 
 sub good_print_item {
-	print "|${BOLD}${GREEN}OK${ENDC}${ENDBOLD}|${GREEN}     *  $_[0]${ENDC}\n";
+	print "\r                                                                                                                                                             ";
+	print "\r|${BOLD}${GREEN}OK${ENDC}${ENDBOLD}|${GREEN}     *  $_[0]${ENDC}\n";
 }
 
 sub bad_print_item {
-	print "|${BOLD}${RED}!!${ENDC}${ENDBOLD}|${RED}     *  $_[0]${ENDC}\n";
+	print "\r                                                                                                                                                             ";
+	print "\r|${BOLD}${RED}!!${ENDC}${ENDBOLD}|${RED}     *  $_[0]${ENDC}\n";
 }
 
 sub get_latest_wordpress_version {
@@ -158,7 +167,43 @@ sub systemcheck_wordpress_versions {
 	our $requiresupdate_counter = 0;
 	our $notwordpress_counter = 0;
         info_print("Searching ${BLUE}$STARTDIR${ENDC} for any wordpress installations, please wait...");
-	find(sub {push @wordpress_version_files_list, $File::Find::name  if $_ eq "version.php"},  $STARTDIR);
+	find(sub {
+		my $file = $File::Find::name;
+		printf("\r_Scanning: $file\r");
+		printf ("\r" . (" " x (length($file) + 11)) . "\r");
+		if ($_ eq "version.php") {
+			push @wordpress_version_files_list, $File::Find::name;
+			our $raw_version;
+			our $wp_latest;
+			if ($raw_version) {
+				undef $raw_version;
+			}
+			if ( -f $file) { 
+				open my $fh, '<', $file or die $!;
+				my @lines = <$fh>;
+				foreach my $line (@lines) {
+					if ($line =~ m/^\$wp_version/) {
+						$raw_version = $line;
+						last; # no point processing any more lines
+					}
+				} 
+                              		if ($raw_version) {
+					chomp($raw_version);
+                              			my ($version) = $raw_version =~ /(\d+.\d+(.\d+)?)/; 
+					if ($version =~ /$wp_latest/) {
+						$uptodate_counter++;
+                             			        if ($VERBOSE) { good_print_item("($version) [ UP TO DATE    ] ${WHITE}$file${ENDC}") }
+                       			} else {
+						$requiresupdate_counter++;
+                                      		        if ($VERBOSE) { bad_print_item("($version) [ PLEASE UPDATE ] ${WHITE}$file${ENDC}") }
+                               	 	}
+                              		 } else {
+					$notwordpress_counter++;
+                               		if ($VERBOSE) { info_print_item("[ ${CYAN}NOT WORDPRESS${ENDC} ] ${WHITE}$file${ENDC}") }
+                               	}
+			}
+		}
+	},  $STARTDIR);
 	info_print("${BOLD}${UNDERLINE}Summary Report for $STARTDIR:${ENDUNDERLINE}${ENDBOLD}");
         our $wordpress_installations_count = @wordpress_version_files_list;
         if ($wordpress_installations_count eq 0) {
@@ -169,37 +214,6 @@ sub systemcheck_wordpress_versions {
                 } else {
                         info_print("Found ${BOLD}$wordpress_installations_count${ENDBOLD} '${UNDERLINE}potential${ENDUNDERLINE}' wordpress installations:");
                 }
-                my $wp_latest = get_latest_wordpress_version();
-                foreach my $file (@wordpress_version_files_list) {
-			our $raw_version;
-			if ($raw_version) {
-				undef $raw_version;
-			}
-			if ( -f $file) {
-				open my $fh, '<', $file or die $!;
-				my @lines = <$fh>;
-				foreach my $line (@lines) {
-					if ($line =~ m/^\$wp_version/) {
-						$raw_version = $line;
-						last; # no point processing any more lines
-					}
-				} 
-                               	if ($raw_version) {
-					chomp($raw_version);
-                               	        my ($version) = $raw_version =~ /(\d+.\d+(.\d+)?)/; 
-					if ($version =~ /$wp_latest/) {
-						$uptodate_counter++;
-                              		        if ($VERBOSE) { good_print_item("($version) [ UP TO DATE    ] ${WHITE}$file${ENDC}") }
-                        	        } else {
-						$requiresupdate_counter++;
-                                       	        if ($VERBOSE) { bad_print_item("($version) [ PLEASE UPDATE ] ${WHITE}$file${ENDC}") }
-                                 	}
-                                } else {
-					$notwordpress_counter++;
-                                	if ($VERBOSE) { info_print_item("[ ${CYAN}NOT WORDPRESS${ENDC} ] ${WHITE}$file${ENDC}") }
-                                }
-			} 
-		}
 		if ($uptodate_counter eq 0) {
 			bad_print(" -> None up to date.")
 		} else {
@@ -220,7 +234,7 @@ sub systemcheck_wordpress_versions {
 #########################################
 ## MAIN SCRIPT EXECUTION STARTS HERE
 #########################################
-my $wp_latest = get_latest_wordpress_version();
+our $wp_latest = get_latest_wordpress_version();
 info_print("Latest wordpress version is: ${BOLD}$wp_latest${ENDBOLD}");
 if ( @ARGV > 0 ) {
 	foreach (@ARGV) {
