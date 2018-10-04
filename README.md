@@ -1,28 +1,22 @@
 # wp_version_scanner
 Wordpress Version Scanner 
 
-Please note the example below is out of date as the output has changed slightly but gives you a good idea of what it does, I'll get a more up to date example shortly.
+Now with 9000% more status so you know whats going on!
 
 ```
 usage example:
 
-# perl wpscan.pl /var/www /mnt /home --verbose
-|--| Latest wordpress version is: 4.7.3
+# perl wpscan.pl --verbose
+|--| Latest wordpress version is: 4.9.8
 |--| Searching /var/www for any wordpress installations, please wait...
+|!!|     *  (4.9.7) [ PLEASE UPDATE ] /var/www/wptesting/wp2/version.php
+|--|     *  [ NOT WORDPRESS ] /var/www/somesite/someshoppingcart/version.php
+|OK|     *  (4.9.8) [ UP TO DATE    ] /var/www//wptesting/wp306/version.php
 |--| Summary Report for /var/www:
 |--| Found 3 'potential' wordpress installations:
-|OK|     *  /var/www/website1/wp-includes/version.php (4.7.3) <-- UP TO DATE
-|--|     *  /var/www/website2/version.php (not wordpress)
-|!!|     *  /var/www/website3/version.php (4.7.1) <-- PLEASE UPDATE
 |OK|  -> 1 up to date.
 |!!|  -> 1 require updating.
-|--|  -> 1 found not to be wordpress installations after closer inspection.
-|--| Searching /mnt for any wordpress installations, please wait...
-|--| Summary Report for /mnt:
-|OK| No wordpress installations detected.
-|--| Searching /home for any wordpress installations, please wait...
-|--| Summary Report for /home:
-|OK| No wordpress installations detected.
+|--|  -> 1 found not to be wordpress after closer inspection.
 Done.
 
 # perl wpscan.pl --help
