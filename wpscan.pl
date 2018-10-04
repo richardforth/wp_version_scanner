@@ -144,13 +144,20 @@ sub bad_print_item {
 	print "\r|${BOLD}${RED}!!${ENDC}${ENDBOLD}|${RED}     *  $_[0]${ENDC}\n";
 }
 
+sub get_version_date {
+	my ($version) = @_;
+	our $response = `curl -sL https://codex.wordpress.org/WordPress_Versions | grep -A2 "$version" | egrep "[0-9]{4}" | head -1 | sed -e 's/<td> //'`;
+	chomp($response);
+	return $response;
+}
+
 sub get_latest_wordpress_version {
         #my $url = 'http://wordpress.org/latest';
 	#my $ua = 'LWP::UserAgent'->new;
 	
 	#if (my $header = $ua->head($url)) {
     	#	my ($wp_latest_version) = $header->header('Content-Disposition') =~ /(\d+\.\d+(?:\.\d+)?)/;
-    	our $url = "https://wordpress.org/latest";
+    	#our $url = "https://wordpress.org/latest";
 	our $response = `curl -sILk wordpress.org/latest | grep Content-Disposition`;
 	our ($wp_latest_version) = $response =~ /(\d+.\d+(.\d+)?)/;
     	return $wp_latest_version;
@@ -169,8 +176,8 @@ sub systemcheck_wordpress_versions {
         info_print("Searching ${BLUE}$STARTDIR${ENDC} for any wordpress installations, please wait...");
 	find(sub {
 		my $file = $File::Find::name;
-		printf("\r_Scanning: $file\r");
-		printf ("\r" . (" " x (length($file) + 11)) . "\r");
+		#printf("\r_Scanning: $file\r");
+		#printf ("\r" . (" " x (length($file) + 11)) . "\r");
 		if ($_ eq "version.php") {
 			push @wordpress_version_files_list, $File::Find::name;
 			our $raw_version;
@@ -187,17 +194,18 @@ sub systemcheck_wordpress_versions {
 						last; # no point processing any more lines
 					}
 				} 
-                              		if ($raw_version) {
+                              	if ($raw_version) {
 					chomp($raw_version);
-                              			my ($version) = $raw_version =~ /(\d+.\d+(.\d+)?)/; 
+                              		my ($version) = $raw_version =~ /(\d+.\d+(.\d+)?)/; 
+					my ($vdate) = get_version_date($version);
 					if ($version =~ /$wp_latest/) {
 						$uptodate_counter++;
-                             			        if ($VERBOSE) { good_print_item("($version) [ UP TO DATE    ] $file") }
+                             			        if ($VERBOSE) { good_print_item("($version) [ UP TO DATE ($vdate) ] $file") }
                        			} else {
 						$requiresupdate_counter++;
-                                      		        if ($VERBOSE) { bad_print_item("($version) [ PLEASE UPDATE ] $file") }
+                                      		        if ($VERBOSE) { bad_print_item("($version) [ PLEASE UPDATE ($vdate) ] $file") }
                                	 	}
-                              		 } else {
+                              	 } else {
 					$notwordpress_counter++;
                                		if ($VERBOSE) { info_print_item("[ ${CYAN}NOT WORDPRESS${ENDC} ] $file") }
                                	}
