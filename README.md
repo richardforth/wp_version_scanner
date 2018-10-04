@@ -1,6 +1,8 @@
 # wp_version_scanner
 Wordpress Version Scanner 
 
+Please note the example below is out of date as the output has changed slightly but gives you a good idea of what it does, I'll get a more up to date example shortly.
+
 ```
 usage example:
 
