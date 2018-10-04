@@ -192,14 +192,14 @@ sub systemcheck_wordpress_versions {
                               			my ($version) = $raw_version =~ /(\d+.\d+(.\d+)?)/; 
 					if ($version =~ /$wp_latest/) {
 						$uptodate_counter++;
-                             			        if ($VERBOSE) { good_print_item("($version) [ UP TO DATE    ] ${WHITE}$file${ENDC}") }
+                             			        if ($VERBOSE) { good_print_item("($version) [ UP TO DATE    ] $file") }
                        			} else {
 						$requiresupdate_counter++;
-                                      		        if ($VERBOSE) { bad_print_item("($version) [ PLEASE UPDATE ] ${WHITE}$file${ENDC}") }
+                                      		        if ($VERBOSE) { bad_print_item("($version) [ PLEASE UPDATE ] $file") }
                                	 	}
                               		 } else {
 					$notwordpress_counter++;
-                               		if ($VERBOSE) { info_print_item("[ ${CYAN}NOT WORDPRESS${ENDC} ] ${WHITE}$file${ENDC}") }
+                               		if ($VERBOSE) { info_print_item("[ ${CYAN}NOT WORDPRESS${ENDC} ] $file") }
                                	}
 			}
 		}
