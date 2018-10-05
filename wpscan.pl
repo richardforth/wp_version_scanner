@@ -188,7 +188,9 @@ sub systemcheck_wordpress_versions {
         info_print("Searching ${BLUE}$STARTDIR${ENDC} for any wordpress installations, please wait...");
 	find(sub {
 		my $file = $File::Find::name;
-		printf("\r_Scanning: $file\r");
+		our $statusfile = ellipsize($file);
+		$statusfile =~ s/\%/\\\%/;
+		printf("\r_Scanning: ${statusfile}\r");
 		if ($_ eq "version.php") {
 			push @wordpress_version_files_list, $File::Find::name;
 			our $raw_version;
@@ -222,7 +224,7 @@ sub systemcheck_wordpress_versions {
                                	}
 			}
 		}
-		printf ("\r" . (" " x (length($file) + 11)) . "\r");
+		printf ("\r" . (" " x (length($statusfile) + 11)) . "\r");
 	},  $STARTDIR);
 	info_print("${BOLD}${UNDERLINE}Summary Report for $STARTDIR:${ENDUNDERLINE}${ENDBOLD}");
         our $wordpress_installations_count = @wordpress_version_files_list;
@@ -261,6 +263,22 @@ sub systemcheck_wordpress_versions {
 	}
 }	
 
+
+sub ellipsize  {
+        my ($file) = @_;
+        if (length($file) > 30) {
+                my @components = split /\//, $file;
+                if (scalar(@components) > 7) {
+                        my $ellipsed = join("/", $components[0], $components[1], $components[2], $components[3], $components[4], $components[5], "...", $components[-1]);
+                        return $ellipsed;
+                } else {
+                        my $ellipsed = join("/", @components);
+                        return $ellipsed;
+                }
+        } else {
+                return $file;
+        }
+}
 
 #########################################
 ## MAIN SCRIPT EXECUTION STARTS HERE
