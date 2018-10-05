@@ -188,12 +188,7 @@ sub systemcheck_wordpress_versions {
         info_print("Searching ${BLUE}$STARTDIR${ENDC} for any wordpress installations, please wait...");
 	find(sub {
 		my $file = $File::Find::name;
-		if (! $file =~ /\%\\/) {
-			our $statusfile = ellipsize($file);
-		} else {
-			our $statusfile = "$file";
-		}
-		our $statusfile;
+		our $statusfile = ellipsize($file);
 		$statusfile =~ s/\%/\\\%/;
 		printf("\r_Scanning: ${statusfile}\r");
 		if ($_ eq "version.php") {
