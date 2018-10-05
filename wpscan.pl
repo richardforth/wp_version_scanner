@@ -189,6 +189,7 @@ sub systemcheck_wordpress_versions {
 	find(sub {
 		my $file = $File::Find::name;
 		my $statusfile = ellipsize($file);
+		print $file . "\n";
 		printf("\r_Scanning: $statusfile\r");
 		if ($_ eq "version.php") {
 			push @wordpress_version_files_list, $File::Find::name;
