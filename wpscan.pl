@@ -191,7 +191,7 @@ sub systemcheck_wordpress_versions {
 		if (! $file =~ /\%\\/) {
 			our $statusfile = ellipsize($file);
 		} else {
-			our $statusfile = "Skipped $file\n";
+			our $statusfile = "$file";
 		}
 		our $statusfile;
 		printf("\r_Scanning: " . $statusfile . "\r");
