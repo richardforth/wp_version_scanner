@@ -193,6 +193,7 @@ sub systemcheck_wordpress_versions {
 		} else {
 			my $statusfile = "Skipped $file\n";
 		}
+		my $statusfile;
 		printf("\r_Scanning: " . $statusfile . "\r");
 		if ($_ eq "version.php") {
 			push @wordpress_version_files_list, $File::Find::name;
