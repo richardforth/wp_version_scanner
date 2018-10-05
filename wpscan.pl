@@ -273,7 +273,7 @@ sub ellipsize  {
         my ($file) = @_;
         if (length($file) > 30) {
                 my @components = split /\//, $file;
-                if (@components > 7) {
+                if (scalar(@components) > 7) {
                         my $ellipsed = join("/", $components[0], $components[1], $components[2], $components[3], $components[4], $components[5], "...", $components[-1]);
                         return $ellipsed;
                 } else {
