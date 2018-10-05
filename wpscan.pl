@@ -189,11 +189,11 @@ sub systemcheck_wordpress_versions {
 	find(sub {
 		my $file = $File::Find::name;
 		if (! $file =~ /\%\\/) {
-			my $statusfile = ellipsize($file);
+			our $statusfile = ellipsize($file);
 		} else {
-			my $statusfile = "Skipped $file\n";
+			our $statusfile = "Skipped $file\n";
 		}
-		my $statusfile;
+		our $statusfile;
 		printf("\r_Scanning: " . $statusfile . "\r");
 		if ($_ eq "version.php") {
 			push @wordpress_version_files_list, $File::Find::name;
