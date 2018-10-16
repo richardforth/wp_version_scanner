@@ -89,11 +89,11 @@ if ($NOCOLOR) {
 } elsif ($BBCODE) {
 	$RED = "[color=#FF0000]"; # 
 	$GREEN = "[color=#0000FF]"; # Make GREEN appear as BLUE, as green looks horrid on forums, hard to read. 
-	$YELLOW = ""; # 
+	$YELLOW = "[color=#000000]"; # Make YELLOW appear as a black default. 
 	$BLUE = "[color=#0000FF]"; # 
-	$PURPLE = ""; # 
-	$CYAN = ""; # 
-	$WHITE = ""; # 
+	$PURPLE =  "[color=#000000]"; # Make PURPLE appear as a black default. 
+	$CYAN =  "[color=#000000]"; # Make CYAN appear as a black default.
+	$WHITE =  "[color=#000000]"; # Make WHITE appear as a black default.
 	$BOLD = "[b]"; # 
 	$ENDBOLD = "[/b]"; # 
 	$UNDERLINE = "[u]"; # 
