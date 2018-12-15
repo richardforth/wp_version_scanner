@@ -222,7 +222,7 @@ sub systemcheck_wordpress_versions {
                                	}
 			}
 		}
-		printf (" " x (length($statusfile)) . "\r");
+		printf (" " x (length($statusfile) + 11) . "\r");
 	},  $STARTDIR);
 	info_print("${BOLD}${UNDERLINE}Summary Report for $STARTDIR:${ENDUNDERLINE}${ENDBOLD}");
         our $wordpress_installations_count = @wordpress_version_files_list;
