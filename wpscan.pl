@@ -23,7 +23,7 @@ If no options are specified, the basic tests will be run.
 	-b,--bbcode		Print output in BBCODE style (useful for forums or ticketing systems that support bbcode)
 	-h, --help		Print this help message
 	-L, --light-term	Show colours for a light background terminal.
-	-n, --nocolor		Use default terminal color, dont try to be all fancy! 
+	-n, --nocolor		Use default terminal color, dont try to be all fancy!
 	-v, --verbose		Use verbose output (display list of wordpress versions found and where, and what version)
 
 END_USAGE
@@ -81,36 +81,36 @@ if ($NOCOLOR) {
 	$PURPLE = "\033[1m"; # bold all the things!
 	$CYAN = "\033[1m";  # bold all the things!
 	$WHITE = "\033[1m";  # bold all the things!
-	$BOLD = "\033[1m"; # Default to ANSI codes.     
-	$ENDBOLD = "\033[0m"; # Default to ANSI codes.     
-	$UNDERLINE = "\033[4m"; # Default to ANSI codes.     
-	$ENDUNDERLINE = "\033[0m"; # Default to ANSI codes.     
+	$BOLD = "\033[1m"; # Default to ANSI codes.
+	$ENDBOLD = "\033[0m"; # Default to ANSI codes.
+	$UNDERLINE = "\033[4m"; # Default to ANSI codes.
+	$ENDUNDERLINE = "\033[0m"; # Default to ANSI codes.
 	$ENDC = "\033[0m"; # Default to ANSI codes
 } elsif ($BBCODE) {
-	$RED = "[color=#FF0000]"; # 
-	$GREEN = "[color=#0000FF]"; # Make GREEN appear as BLUE, as green looks horrid on forums, hard to read. 
-	$YELLOW = "[color=#000000]"; # Make YELLOW appear as a black default. 
-	$BLUE = "[color=#0000FF]"; # 
-	$PURPLE =  "[color=#000000]"; # Make PURPLE appear as a black default. 
+	$RED = "[color=#FF0000]"; #
+	$GREEN = "[color=#0000FF]"; # Make GREEN appear as BLUE, as green looks horrid on forums, hard to read.
+	$YELLOW = "[color=#000000]"; # Make YELLOW appear as a black default.
+	$BLUE = "[color=#0000FF]"; #
+	$PURPLE =  "[color=#000000]"; # Make PURPLE appear as a black default.
 	$CYAN =  "[color=#000000]"; # Make CYAN appear as a black default.
 	$WHITE =  "[color=#000000]"; # Make WHITE appear as a black default.
-	$BOLD = "[b]"; # 
-	$ENDBOLD = "[/b]"; # 
-	$UNDERLINE = "[u]"; # 
-	$ENDUNDERLINE = "[/u]"; # 
-	$ENDC = "[/color]"; # 
+	$BOLD = "[b]"; #
+	$ENDBOLD = "[/b]"; #
+	$UNDERLINE = "[u]"; #
+	$ENDUNDERLINE = "[/u]"; #
+	$ENDC = "[/color]"; #
 } else {
 	$RED = "\033[91m"; # Default to ANSI codes.
-	$GREEN = "\033[92m"; # Default to ANSI codes. 
-	$YELLOW = "\033[93m"; # Default to ANSI codes. 
-	$BLUE = "\033[94m"; # Default to ANSI codes.  
-	$PURPLE = "\033[95m"; # Default to ANSI codes.     
-	$CYAN = "\033[96m"; # Default to ANSI codes.     
-	$WHITE = "\033[97m"; # Default to ANSI codes.     
-	$BOLD = "\033[1m"; # Default to ANSI codes.     
-	$ENDBOLD = "\033[0m"; # Default to ANSI codes.     
-	$UNDERLINE = "\033[4m"; # Default to ANSI codes.     
-	$ENDUNDERLINE = "\033[0m"; # Default to ANSI codes.     
+	$GREEN = "\033[92m"; # Default to ANSI codes.
+	$YELLOW = "\033[93m"; # Default to ANSI codes.
+	$BLUE = "\033[94m"; # Default to ANSI codes.
+	$PURPLE = "\033[95m"; # Default to ANSI codes.
+	$CYAN = "\033[96m"; # Default to ANSI codes.
+	$WHITE = "\033[97m"; # Default to ANSI codes.
+	$BOLD = "\033[1m"; # Default to ANSI codes.
+	$ENDBOLD = "\033[0m"; # Default to ANSI codes.
+	$UNDERLINE = "\033[4m"; # Default to ANSI codes.
+	$ENDUNDERLINE = "\033[0m"; # Default to ANSI codes.
 	$ENDC = "\033[0m"; # Default to ANSI codes
 }
 
@@ -164,14 +164,14 @@ sub get_version_date {
 sub get_latest_wordpress_version {
         #my $url = 'http://wordpress.org/latest';
 	#my $ua = 'LWP::UserAgent'->new;
-	
+
 	#if (my $header = $ua->head($url)) {
     	#	my ($wp_latest_version) = $header->header('Content-Disposition') =~ /(\d+\.\d+(?:\.\d+)?)/;
     	#our $url = "https://wordpress.org/latest";
-	our $response = `curl -sILk wordpress.org/latest | grep Content-Disposition`;
+	our $response = `curl -sILk wordpress.org/latest | grep -i content-disposition`;
 	our ($wp_latest_version) = $response =~ /(\d+.\d+(.\d+)?)/;
 	# now warm up the cache with this version to save future lookups with curl
-	get_version_date($wp_latest_version);	
+	get_version_date($wp_latest_version);
     	return $wp_latest_version;
     	#	return $wp_latest_version;
 	#} else {
@@ -196,7 +196,7 @@ sub systemcheck_wordpress_versions {
 			if ($raw_version) {
 				undef $raw_version;
 			}
-			if ( -f $file) { 
+			if ( -f $file) {
 				open my $fh, '<', $file or die $!;
 				my @lines = <$fh>;
 				foreach my $line (@lines) {
@@ -204,10 +204,10 @@ sub systemcheck_wordpress_versions {
 						$raw_version = $line;
 						last; # no point processing any more lines
 					}
-				} 
+				}
                               	if ($raw_version) {
 					chomp($raw_version);
-                              		my ($version) = $raw_version =~ /(\d+.\d+(.\d+)?)/; 
+                              		my ($version) = $raw_version =~ /(\d+.\d+(.\d+)?)/;
 					my ($vdate) = get_version_date($version);
 					if ($version =~ /$wp_latest/) {
 						$uptodate_counter++;
@@ -258,7 +258,7 @@ sub systemcheck_wordpress_versions {
 		}
 
 	}
-}	
+}
 
 
 sub ellipsize  {
@@ -288,17 +288,17 @@ if ( @ARGV > 0 ) {
 		if ( -d $_) {
 			my $STARTDIR = $_;
 			systemcheck_wordpress_versions($STARTDIR);
-		} else { 
+		} else {
 			bad_print("Doesnt appear to be a valid directory: ");
 			bad_print_item($_);
 		}
 	}
 } else {
-	my $STARTDIR = "/var/www";	
+	my $STARTDIR = "/var/www";
 	info_print("Defaulting to " . $STARTDIR);
 	if ( -d $STARTDIR) {
 		systemcheck_wordpress_versions($STARTDIR);
-	} else { 
+	} else {
 		bad_print("Doesnt appear to be a valid directory: ");
 		bad_print_item($STARTDIR);
 	}
