@@ -148,7 +148,7 @@ sub get_version_date {
 	my ($version) = @_;
 	our %date_of;
 	if ( ! $date_of{$version} ) {
-		our $response = `curl -sL https://codex.wordpress.org/WordPress_Versions | grep -A2 "Version $version" | egrep "[0-9]{4}" | head -1 | sed -e 's/<td> //'`;
+		our $response = `curl -sL https://codex.wordpress.org/WordPress_Versions | grep -A2 ">$version<" | egrep "[0-9]{4}" | head -1 | sed -e 's/<td> //'`;
 		chomp($response);
 		if ($response =~ /January|February|March|April|May|June|July|August|September|October|November|December/) {
 			$date_of{$version} = $response;
