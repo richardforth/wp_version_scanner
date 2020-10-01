@@ -208,15 +208,20 @@ sub systemcheck_wordpress_versions {
                               	if ($raw_version) {
 					chomp($raw_version);
                               		my ($version) = $raw_version =~ /(\d+.\d+(.\d+)?)/;
-					my ($vdate) = get_version_date($version);
-					if ($version =~ /$wp_latest/) {
-						$uptodate_counter++;
-                             			        if ($VERBOSE) { good_print_item("($version) [ UP TO DATE ($vdate) ] $file") }
-                       			} else {
-						$requiresupdate_counter++;
-                                      		        if ($VERBOSE) { bad_print_item("($version) [ PLEASE UPDATE ($vdate) ] $file") }
-                               	 	}
-                              	 } else {
+                              		if ($version) {
+						my ($vdate) = get_version_date($version);
+						if ($version =~ /$wp_latest/) {
+							$uptodate_counter++;
+                             				        if ($VERBOSE) { good_print_item("($version) [ UP TO DATE ($vdate) ] $file") }
+                       				} else {
+							$requiresupdate_counter++;
+                                      			        if ($VERBOSE) { bad_print_item("($version) [ PLEASE UPDATE ($vdate) ] $file") }
+                               	 		}
+                              		} else {
+						$notwordpress_counter++;
+                               			if ($VERBOSE) { info_print_item("[ ${CYAN}NOT WORDPRESS${ENDC} ] $file") }
+                               		}
+                              	} else {
 					$notwordpress_counter++;
                                		if ($VERBOSE) { info_print_item("[ ${CYAN}NOT WORDPRESS${ENDC} ] $file") }
                                	}
