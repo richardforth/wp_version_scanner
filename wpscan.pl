@@ -219,11 +219,11 @@ sub systemcheck_wordpress_versions {
                                	 		}
                               		} else {
 						$notwordpress_counter++;
-                               			if ($VERBOSE) { info_print_item("[ ${CYAN}NOT WORDPRESS${ENDC} ] $file") }
+                               			if ($VERBOSE) { info_print_item("[ NOT WORDPRESS} ] $file") }
                                		}
                               	} else {
 					$notwordpress_counter++;
-                               		if ($VERBOSE) { info_print_item("[ ${CYAN}NOT WORDPRESS${ENDC} ] $file") }
+                               		if ($VERBOSE) { info_print_item("[ NOT WORDPRESS ] $file") }
                                	}
 			}
 		}
