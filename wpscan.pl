@@ -115,32 +115,32 @@ if ($NOCOLOR) {
 }
 
 sub info_print {
-	print "\r                                                                                                                                                             ";
+	print "\r                                                                                                                                                             \r";
 	print "\r|${BOLD}${BLUE}--${ENDC}${ENDBOLD}| $_[0]\n";
 }
 
 sub good_print {
-	print "\r                                                                                                                                                             ";
+	print "\r                                                                                                                                                             \r";
 	print "\r|${BOLD}${GREEN}OK${ENDC}${ENDBOLD}|${GREEN} $_[0]${ENDC}\n";
 }
 
 sub bad_print {
-	print "\r                                                                                                                                                             ";
+	print "\r                                                                                                                                                             \r";
 	print "\r|${BOLD}${RED}!!${ENDC}${ENDBOLD}|${RED} $_[0]${ENDC}\n";
 }
 
 sub info_print_item {
-	print "\r                                                                                                                                                             ";
+	print "\r                                                                                                                                                             \r";
 	print "\r|${BOLD}${BLUE}--${ENDC}${ENDBOLD}|     *  $_[0]\n";
 }
 
 sub good_print_item {
-	print "\r                                                                                                                                                             ";
+	print "\r                                                                                                                                                             \r";
 	print "\r|${BOLD}${GREEN}OK${ENDC}${ENDBOLD}|${GREEN}     *  $_[0]${ENDC}\n";
 }
 
 sub bad_print_item {
-	print "\r                                                                                                                                                             ";
+	print "\r                                                                                                                                                             \r";
 	print "\r|${BOLD}${RED}!!${ENDC}${ENDBOLD}|${RED}     *  $_[0]${ENDC}\n";
 }
 
