@@ -16,6 +16,7 @@ services:
   wordpress: 
     image: wordpress 
     restart: always
+    # this user setting is needed for my perlscript to run in the jenkins tests
     user: root:root
     ports: 
       - 8081:80 
