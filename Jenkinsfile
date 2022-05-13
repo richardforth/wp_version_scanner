@@ -15,7 +15,7 @@ pipeline {
         }
         stage("Run tests against wordpress container") {
             steps {
-                sh 'echo "Hello world"'
+                sh 'docker compose run wordpress curl -sL https://raw.githubusercontent.com/richardforth/wp_version_scanner/staging/wpscan.pl | perl - --verbose'
             }
         }
     }

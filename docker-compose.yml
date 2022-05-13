@@ -15,7 +15,9 @@ services:
       - db:/var/lib/mysql
   wordpress: 
     image: wordpress 
-    restart: always 
+    restart: always
+    # this user setting is needed for my perlscript to run in the jenkins tests
+    user: root:root
     ports: 
       - 8081:80 
     environment:
