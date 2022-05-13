@@ -15,7 +15,8 @@ services:
       - db:/var/lib/mysql
   wordpress: 
     image: wordpress 
-    restart: always 
+    restart: always
+    user: root:root
     ports: 
       - 8081:80 
     environment:
