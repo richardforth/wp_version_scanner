@@ -3,14 +3,6 @@ services:
   db: 
     image: mysql:5.7 
     restart: always 
-    environment:
-      # these credentials would normally go in a .env file and not be committed
-      # however this deployment is ephemeral and the passwords are not important
-      # and is needed for the jenkins pipeline to work
-      MYSQL_DATABASE: exampledb 
-      MYSQL_USER: exampleuser 
-      MYSQL_PASSWORD: examplepass 
-      MYSQL_RANDOM_ROOT_PASSWORD: '1' 
     volumes: 
       - db:/var/lib/mysql
   wordpress: 
@@ -20,14 +12,6 @@ services:
     user: root:root
     ports: 
       - 8081:80 
-    environment:
-      # these credentials would normally go in a .env file and not be committed
-      # however this deployment is ephemeral and the passwords are not important
-      # and is needed for the jenkins pipeline to work
-      WORDPRESS_DB_HOST: db 
-      WORDPRESS_DB_USER: exampleuser 
-      WORDPRESS_DB_PASSWORD: examplepass 
-      WORDPRESS_DB_NAME: exampledb 
     volumes: 
       - wordpress:/var/www/html 
 volumes: 
