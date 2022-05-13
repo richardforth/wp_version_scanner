@@ -9,7 +9,7 @@ pipeline {
         }
         stage("Start containers") {
             steps {
-                sh 'docker compose up --no-color -d'
+                sh 'docker compose up --env-file .env --no-color -d'
                 sh 'docker compose ps'
             }
         }
