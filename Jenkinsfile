@@ -15,8 +15,6 @@ pipeline {
         }
         stage("Run tests against wordpress container") {
             steps {
-                sh 'curl -sILk http://127.0.0.1:8081'
-                sh 'docker compose run wordpress hostname'
                 sh 'docker compose exec wordpress sh -c "curl -sL https://raw.githubusercontent.com/richardforth/wp_version_scanner/staging/wpscan.pl | perl - --nocolor --verbose"'
             }
         }
