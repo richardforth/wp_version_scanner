@@ -1,6 +1,10 @@
 pipeline { 
     agent { label 'docker' }
     
+    options {
+      buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '3')
+    }
+
     stages {
         stage("Prune Docker Data") {
             steps {
